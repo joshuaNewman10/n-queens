@@ -70,27 +70,15 @@ window.findNQueensSolution = function(n) {
   var solutionCount = 0;
   var board = new Board({n: n});
   var rows = board.rows();
-  var boardCopy = [];
+  var boardCopy;
   var solutions = [];
-  var aSolution;
 
-  if(n === 0 ) {
-    return rows;
-  }
-
-  if( n==2 || n==3 ) {
-    return null;
-  }
-
-  function matrixCopy(matrix) {
-    for(var i=0; i<matrix.length; i++) {
-      boardCopy[i] = matrix[i].slice();
-    }
-  }
 
   var recursiveFn = function(rowNum){
     if(rowNum === n){
-      boardCopy = matrixCopy(rows);
+      boardCopy = _.map(rows, function(row) {
+        return row.slice();
+      });
       solutions.push(boardCopy);
       solutionCount++;
       return;
@@ -111,7 +99,7 @@ window.findNQueensSolution = function(n) {
   }
   recursiveFn(0);
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutions[0];
+  return solutions[0] || board.rows();
 };
 
 
