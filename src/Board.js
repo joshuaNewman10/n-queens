@@ -83,6 +83,9 @@
       var row = this.get(rowIndex);
       var count = 0;
       for(var i=0; i<n; i++) {
+        // if(row === undefined) {
+        //   debugger;
+        // }
         count+=row[i];
       }
       return count > 1; // fixme

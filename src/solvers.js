@@ -32,38 +32,32 @@ window.findNRooksSolution = function(n) {
   return rows;
 };
 
-
-
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
-  var msolution = [];
-  var arg = [];
+  var solutionCount = 0; //fixme
   var board = new Board({n:n});
   var rows = board.rows();
-  for(var i = 0; i<row.length; i++) {
-    cell = rows[0][i];
-    recursiveFn(cell);
-    }
-  }
-  var recursiveFn = function(arg){
-    if(arg.length === n){
-      solution.push(arg);
-    }
-    for (var k = 1; k < n; k++) {
-      for (var j = 0; j < rows.length; j++) {
-        row[k][j] = 1;
-        if(board.hasRowConflictAt(j) || board.hasColConflictAt(j)) {
-          row[k][j] = 0;
-          continue;
-        } else {
-          arg.push(row[k][j]);
-          recursiveFn(arg);
-          arg.pop()
-        }
-    }
 
-  }
+
+  var recursiveFn = function(rowNum){
+    if(rowNum === n-1){
+      solutionCount++;
+      rowNum--;
+      return;
+    }
+    var row = rows[rowNum];
+    for(var k=0; k<row.length; k++) {
+      row[k] = 1;
+      if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) ) {
+        row[k] = 0;
+      } else {
+          rowNum++;
+          recursiveFn(rowNum);
+        }
+        rowNum--;
+      }
+    }
+    recursiveFn(0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
