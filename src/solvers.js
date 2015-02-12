@@ -42,7 +42,6 @@ window.countNRooksSolutions = function(n) {
   var recursiveFn = function(rowNum){
     if(rowNum === n-1){
       solutionCount++;
-      rowNum--;
       return;
     }
     var row = rows[rowNum];
@@ -53,9 +52,11 @@ window.countNRooksSolutions = function(n) {
       } else {
           rowNum++;
           recursiveFn(rowNum);
+          row[k] = 0;
+          rowNum--;
         }
-        rowNum--;
       }
+      return;
     }
     recursiveFn(0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
@@ -66,17 +67,59 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
-
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  var board = new Board({n: n});
+  if(n===0 || (n > 1 && n < 4) ) {
+    return board.rows();
+  }
+  var rows = board.rows();
+  var row;
+  n == 1 ? rows[0][0] = 1 : rows[0][1] = 1; //such an ugly hack
+  for(var i=0; i<rows.length; i++) {
+    row = rows[i];
+    for(var k=0; k<row.length; k++) {
+      row[k] = 1;
+      if( board.hasRowConflictAt(i) || board.hasColConflictAt(k) || board.hasAnyMajorDiagonalConflicts() || board.hasAnyMinorDiagonalConflicts() ) {
+        row[k]=0;
+      }
+    }
+  }
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(rows));
+  return rows;
 };
 
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var board = new Board({n: n});
+  var rows = board.rows();
 
+  if( n===0 ) {
+    return solutionCount + 1;
+  }
+
+
+  var recursiveFn = function(rowNum){
+    if(rowNum === n-1){
+      solutionCount++;
+      return;
+    }
+  var row = rows[rowNum];
+  // debugger;
+  for (var k=0; k<row.length; k++) {
+    row[k] = 1;
+    if( board.hasRowConflictAt(rowNum) || board.hasRowConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
+      row[k] = 0;
+    } else {
+      rowNum++;
+      recursiveFn(rowNum);
+      row[k] = 0;
+      rowNum--;
+    }
+  }
+  return;
+  }
+  recursiveFn(0);
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
