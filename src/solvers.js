@@ -40,7 +40,7 @@ window.countNRooksSolutions = function(n) {
 
 
   var recursiveFn = function(rowNum){
-    if(rowNum === n-1){
+    if(rowNum === n){
       solutionCount++;
       return;
     }
@@ -67,24 +67,51 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
+  var solutionCount = 0;
   var board = new Board({n: n});
-  if(n===0 || (n > 1 && n < 4) ) {
-    return board.rows();
-  }
   var rows = board.rows();
-  var row;
-  n == 1 ? rows[0][0] = 1 : rows[0][1] = 1; //such an ugly hack
-  for(var i=0; i<rows.length; i++) {
-    row = rows[i];
-    for(var k=0; k<row.length; k++) {
-      row[k] = 1;
-      if( board.hasRowConflictAt(i) || board.hasColConflictAt(k) || board.hasAnyMajorDiagonalConflicts() || board.hasAnyMinorDiagonalConflicts() ) {
-        row[k]=0;
-      }
+  var boardCopy = [];
+  var solutions = [];
+  var aSolution;
+
+  if(n === 0 ) {
+    return rows;
+  }
+
+  if( n==2 || n==3 ) {
+    return null;
+  }
+
+  function matrixCopy(matrix) {
+    for(var i=0; i<matrix.length; i++) {
+      boardCopy[i] = matrix[i].slice();
     }
   }
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(rows));
-  return rows;
+
+  var recursiveFn = function(rowNum){
+    if(rowNum === n){
+      boardCopy = matrixCopy(rows);
+      solutions.push(boardCopy);
+      solutionCount++;
+      return;
+    }
+  var row = rows[rowNum];
+  for (var k=0; k<row.length; k++) {
+    row[k] = 1;
+    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
+      row[k] = 0;
+    } else {
+      rowNum++;
+      recursiveFn(rowNum);
+      row[k] = 0;
+      rowNum--;
+    }
+  }
+  return;
+  }
+  recursiveFn(0);
+  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  return solutions[0];
 };
 
 
@@ -98,9 +125,12 @@ window.countNQueensSolutions = function(n) {
     return solutionCount + 1;
   }
 
-
+  if (n===2 || n===3) {
+    solutionCount = 0;
+    return solutionCount;
+  }
   var recursiveFn = function(rowNum){
-    if(rowNum === n-1){
+    if(rowNum === n){
       solutionCount++;
       return;
     }
@@ -108,7 +138,7 @@ window.countNQueensSolutions = function(n) {
   // debugger;
   for (var k=0; k<row.length; k++) {
     row[k] = 1;
-    if( board.hasRowConflictAt(rowNum) || board.hasRowConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
+    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
       row[k] = 0;
     } else {
       rowNum++;
