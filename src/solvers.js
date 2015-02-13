@@ -37,6 +37,7 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0; //fixme
   var board = new Board({n:n});
   var rows = board.rows();
+  var visited = {};
 
 
   var recursiveFn = function(rowNum){
@@ -46,7 +47,11 @@ window.countNRooksSolutions = function(n) {
     }
     var row = rows[rowNum];
     for(var k=0; k<row.length; k++) {
+      if( visited[k] ) {
+        continue;
+      }
       row[k] = 1;
+      visited[k] = true;
       if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) ) {
         row[k] = 0;
       } else {
@@ -54,6 +59,7 @@ window.countNRooksSolutions = function(n) {
           recursiveFn(rowNum);
           row[k] = 0;
           rowNum--;
+          delete visited[k];
         }
       }
       return;
@@ -108,6 +114,7 @@ window.countNQueensSolutions = function(n) {
   var solutionCount = 0;
   var board = new Board({n: n});
   var rows = board.rows();
+  var visited = {};
 
   if( n===0 ) {
     return solutionCount + 1;
@@ -123,16 +130,21 @@ window.countNQueensSolutions = function(n) {
       return;
     }
   var row = rows[rowNum];
-  // debugger;
   for (var k=0; k<row.length; k++) {
+    if(visited[k]) {
+        continue;
+      }
     row[k] = 1;
+    visited[k] = true;
     if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasMinorDiagonalConflictAt(k+rowNum) || board.hasMajorDiagonalConflictAt(k-rowNum) ) {
       row[k] = 0;
+      delete visited[k];
     } else {
       rowNum++;
       recursiveFn(rowNum);
       row[k] = 0;
       rowNum--;
+      delete visited[k];
     }
   }
   return;
