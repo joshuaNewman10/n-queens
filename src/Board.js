@@ -19,7 +19,7 @@
     },
 
     rows: function() {
-      return _(_.range(this.get('n'))).map(function(rowIndex) { //doesnt this return a copy?
+      return _(_.range(this.get('n'))).map(function(rowIndex) {
         return this.get(rowIndex);
       }, this);
     },

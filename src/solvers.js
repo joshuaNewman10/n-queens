@@ -86,7 +86,7 @@ window.findNQueensSolution = function(n) {
   var row = rows[rowNum];
   for (var k=0; k<row.length; k++) {
     row[k] = 1;
-    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
+    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasMinorDiagonalConflictAt(k+rowNum) || board.hasMajorDiagonalConflictAt(k-rowNum) ) {
       row[k] = 0;
     } else {
       rowNum++;
@@ -126,7 +126,7 @@ window.countNQueensSolutions = function(n) {
   // debugger;
   for (var k=0; k<row.length; k++) {
     row[k] = 1;
-    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasAnyMinorDiagonalConflicts() || board.hasAnyMajorDiagonalConflicts() ) {
+    if( board.hasRowConflictAt(rowNum) || board.hasColConflictAt(k) || board.hasMinorDiagonalConflictAt(k+rowNum) || board.hasMajorDiagonalConflictAt(k-rowNum) ) {
       row[k] = 0;
     } else {
       rowNum++;
